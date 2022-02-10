@@ -1,7 +1,8 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerAnimatorManager : MonoBehaviour, InputActions.IMovementActions
+public class PlayerAnimatorManager : MonoBehaviourPun, InputActions.IMovementActions
 {
     [SerializeField] private CharacterController characterController;
     [SerializeField] private Animator animator;
@@ -25,17 +26,24 @@ public class PlayerAnimatorManager : MonoBehaviour, InputActions.IMovementAction
 
     private void OnEnable()
     {
-        if (inputActions == null)
+        if (photonView.IsMine)
         {
-            inputActions = new InputActions();
-            inputActions.Movement.SetCallbacks(this);
+            if (inputActions == null)
+            {
+                inputActions = new InputActions();
+                inputActions.Movement.SetCallbacks(this);
+            }
+
+            inputActions.Movement.Enable();
         }
-        inputActions.Movement.Enable();
     }
 
     private void OnDisable()
     {
-        inputActions.Movement.Disable();
+        if (inputActions != null)
+        {
+            inputActions.Movement.Disable();
+        }
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -48,10 +56,16 @@ public class PlayerAnimatorManager : MonoBehaviour, InputActions.IMovementAction
     public void OnJump(InputAction.CallbackContext context)
     {
         jump = context.ReadValue<float>() > 0.5f;
+        Debug.LogFormat("OnJump: {0}", jump);
     }
 
     private void Update()
     {
+        if (!photonView.IsMine && PhotonNetwork.IsConnected)
+        {
+            return;
+        }
+
         if (characterController.isGrounded)
         {
             if (jump)
