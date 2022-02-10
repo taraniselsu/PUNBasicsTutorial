@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Launcher : MonoBehaviourPunCallbacks
 {
+    [SerializeField] private GameObject controlPanel;
+    [SerializeField] private GameObject progressLabel;
     [SerializeField] private byte maxPlayersPerRoom = 4;
 
     private void Awake()
@@ -13,11 +15,15 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        Connect();
+        controlPanel.SetActive(true);
+        progressLabel.SetActive(false);
     }
 
-    private void Connect()
+    public void Connect()
     {
+        controlPanel.SetActive(false);
+        progressLabel.SetActive(true);
+
         if (PhotonNetwork.IsConnected)
         {
             PhotonNetwork.JoinRandomRoom();
@@ -37,6 +43,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.LogWarningFormat("OnDisconnected: {0}", cause);
+        controlPanel.SetActive(true);
+        progressLabel.SetActive(false);
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
