@@ -405,6 +405,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3016681446967647570, guid: 12a2f19962564b14da169519a8ee2c0c, type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4822480473424487225, guid: 12a2f19962564b14da169519a8ee2c0c, type: 3}
       propertyPath: m_Name
       value: Robot Kyle

@@ -158,6 +158,45 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Firing"",
+            ""id"": ""7afbae95-f919-497c-8324-6602379aebe0"",
+            ""actions"": [
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""10390ef0-93b5-4840-b7ae-759d63077d90"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""5ea08357-61d1-41ea-8742-0d0b8c0dd0e8"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e050d149-eb18-453b-83a9-040003254517"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -183,6 +222,9 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
         m_Movement_Move = m_Movement.FindAction("Move", throwIfNotFound: true);
         m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
+        // Firing
+        m_Firing = asset.FindActionMap("Firing", throwIfNotFound: true);
+        m_Firing_Fire = m_Firing.FindAction("Fire", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -279,6 +321,39 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         }
     }
     public MovementActions @Movement => new MovementActions(this);
+
+    // Firing
+    private readonly InputActionMap m_Firing;
+    private IFiringActions m_FiringActionsCallbackInterface;
+    private readonly InputAction m_Firing_Fire;
+    public struct FiringActions
+    {
+        private @InputActions m_Wrapper;
+        public FiringActions(@InputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Fire => m_Wrapper.m_Firing_Fire;
+        public InputActionMap Get() { return m_Wrapper.m_Firing; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(FiringActions set) { return set.Get(); }
+        public void SetCallbacks(IFiringActions instance)
+        {
+            if (m_Wrapper.m_FiringActionsCallbackInterface != null)
+            {
+                @Fire.started -= m_Wrapper.m_FiringActionsCallbackInterface.OnFire;
+                @Fire.performed -= m_Wrapper.m_FiringActionsCallbackInterface.OnFire;
+                @Fire.canceled -= m_Wrapper.m_FiringActionsCallbackInterface.OnFire;
+            }
+            m_Wrapper.m_FiringActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Fire.started += instance.OnFire;
+                @Fire.performed += instance.OnFire;
+                @Fire.canceled += instance.OnFire;
+            }
+        }
+    }
+    public FiringActions @Firing => new FiringActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -292,5 +367,9 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+    }
+    public interface IFiringActions
+    {
+        void OnFire(InputAction.CallbackContext context);
     }
 }
