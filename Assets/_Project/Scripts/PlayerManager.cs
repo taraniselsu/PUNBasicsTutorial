@@ -11,11 +11,14 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, InputAct
     public static bool HasLocalPlayerInstance => localPlayerInstance != null;
 
     [SerializeField] private GameObject beams;
-    private GameManager gameManager;
+    [SerializeField] private PlayerUI playerUIPrefab;
 
+    private GameManager gameManager;
     private InputActions inputActions;
     private bool isFiring = false;
     private float health = 1f;
+
+    public float Health => health;
 
     private void Awake()
     {
@@ -53,6 +56,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, InputAct
             CameraWork cameraWork = GetComponent<CameraWork>();
             cameraWork.OnStartFollowing();
         }
+
+        CreatePlayerUI();
     }
 
     public override void OnDisable()
@@ -139,5 +144,13 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, InputAct
             Vector3 temp = Random.insideUnitCircle;
             transform.position = new Vector3(temp.x, 5f, temp.y);
         }
+
+        CreatePlayerUI();
+    }
+
+    private void CreatePlayerUI()
+    {
+        PlayerUI playerUI = Instantiate(playerUIPrefab);
+        playerUI.SetTarget(this);
     }
 }
