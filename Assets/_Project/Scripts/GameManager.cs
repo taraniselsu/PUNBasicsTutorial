@@ -1,10 +1,30 @@
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
+    [SerializeField] private GameObject playerPrefab;
+
+    private void Start()
+    {
+        Assert.IsNotNull(playerPrefab);
+
+        if (!PlayerManager.HasLocalPlayerInstance)
+        {
+            Debug.LogFormat("Instantiating local player in {0}", SceneManagerHelper.ActiveSceneName);
+            Vector3 temp = Random.insideUnitCircle;
+            Vector3 position = new Vector3(temp.x, 5f, temp.y);
+            PhotonNetwork.Instantiate(playerPrefab.name, position, Quaternion.identity, 0);
+        }
+        else
+        {
+            Debug.LogFormat("Local player already instantiated for {0}", SceneManagerHelper.ActiveSceneName);
+        }
+    }
+
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.LogFormat("OnPlayerEnteredRoom: {0}", newPlayer.NickName);

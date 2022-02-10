@@ -2,9 +2,14 @@ using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, InputActions.IFiringActions
 {
+    private static GameObject localPlayerInstance = null;
+    public static bool HasLocalPlayerInstance => localPlayerInstance != null;
+
     [SerializeField] private GameObject beams;
     private GameManager gameManager;
 
@@ -12,9 +17,20 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, InputAct
     private bool isFiring = false;
     private float health = 1f;
 
+    private void Awake()
+    {
+        if (photonView.IsMine)
+        {
+            localPlayerInstance = gameObject;
+        }
+        DontDestroyOnLoad(gameObject);
+    }
+
     public override void OnEnable()
     {
         base.OnEnable();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         if (photonView.IsMine)
         {
             if (inputActions == null)
@@ -42,6 +58,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, InputAct
     public override void OnDisable()
     {
         base.OnDisable();
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
         if (inputActions != null)
         {
             inputActions.Firing.Disable();
@@ -111,6 +129,15 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, InputAct
         {
             isFiring = (bool)stream.ReceiveNext();
             health = (float)stream.ReceiveNext();
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (!Physics.Raycast(transform.position, Vector3.down, 5f))
+        {
+            Vector3 temp = Random.insideUnitCircle;
+            transform.position = new Vector3(temp.x, 5f, temp.y);
         }
     }
 }
