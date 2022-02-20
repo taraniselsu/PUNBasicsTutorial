@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (!PlayerManager.HasLocalPlayerInstance)
         {
             Debug.LogFormat("Instantiating local player in {0}", SceneManagerHelper.ActiveSceneName);
-            Vector3 temp = Random.insideUnitCircle;
+            Vector3 temp = Random.insideUnitCircle * 5f;
             Vector3 position = new Vector3(temp.x, 5f, temp.y);
             PhotonNetwork.Instantiate(playerPrefab.name, position, Quaternion.identity, 0);
         }

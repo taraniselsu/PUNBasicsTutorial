@@ -141,7 +141,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable, InputAct
     {
         if (!Physics.Raycast(transform.position, Vector3.down, 5f))
         {
-            Vector3 temp = Random.insideUnitCircle;
+            Vector3 temp = Random.insideUnitCircle * 5f;
             transform.position = new Vector3(temp.x, 5f, temp.y);
         }
 
