@@ -28,7 +28,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.JoinRandomRoom();
+            JoinRandomOrCreateRoom();
         }
         else
         {
@@ -36,12 +36,18 @@ public class Launcher : MonoBehaviourPunCallbacks
         }
     }
 
+    private void JoinRandomOrCreateRoom()
+    {
+        RoomOptions roomOptions = new RoomOptions() { MaxPlayers = maxPlayersPerRoom };
+        PhotonNetwork.JoinRandomOrCreateRoom(roomOptions: roomOptions);
+    }
+
     public override void OnConnectedToMaster()
     {
         Debug.Log("OnConnectedToMaster");
         if (isConnecting)
         {
-            PhotonNetwork.JoinRandomRoom();
+            JoinRandomOrCreateRoom();
             isConnecting = false;
         }
     }
@@ -54,10 +60,9 @@ public class Launcher : MonoBehaviourPunCallbacks
         isConnecting = false;
     }
 
-    public override void OnJoinRandomFailed(short returnCode, string message)
+    public override void OnCreatedRoom()
     {
-        Debug.LogFormat("OnJoinRandomFailed: {0} [{1}]. Creating a new room.", message, returnCode);
-        PhotonNetwork.CreateRoom("room", new RoomOptions() { MaxPlayers = maxPlayersPerRoom });
+        Debug.Log("OnCreatedRoom");
     }
 
     public override void OnJoinedRoom()
@@ -69,5 +74,20 @@ public class Launcher : MonoBehaviourPunCallbacks
             Debug.Log("OnJoinedRoom: loading level 'Room for 1'");
             PhotonNetwork.LoadLevel("Room for 1");
         }
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.LogFormat("OnCreateRandomFailed: {0} [{1}]", message, returnCode);
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.LogFormat("OnJoinRoomFailed: {0} [{1}]", message, returnCode);
+    }
+
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        Debug.LogFormat("OnJoinRandomFailed: {0} [{1}]", message, returnCode);
     }
 }
