@@ -1,0 +1,60 @@
+# Based on the examples here:
+# https://github.com/alexkaratarakis/gitattributes
+# http://davidlaing.com/2012/09/19/customise-your-gitattributes-to-become-a-git-ninja/
+
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Source code files
+*.cs        diff=csharp
+
+# Visual Studio
+*.sln       text eol=crlf merge=binary
+*.csproj    text eol=crlf merge=binary
+*.vcxproj	text eol=crlf merge=binary
+*.vcproj	text eol=crlf merge=binary
+
+# Documents
+*.doc       diff=astextplain
+*.DOC       diff=astextplain
+*.docx      diff=astextplain
+*.DOCX      diff=astextplain
+*.odt       diff=astextplain
+*.ods       diff=astextplain
+*.dot       diff=astextplain
+*.DOT       diff=astextplain
+*.pdf       diff=astextplain
+*.PDF       diff=astextplain
+*.rtf       diff
+*.RTF       diff
+*.md        text
+*.adoc      text
+*.textile   text
+*.mustache  text
+*.csv       text
+*.tab       text
+*.tsv       text
+*.sql       text
+
+# Graphics
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.tif       binary
+*.tiff      binary
+*.ico       binary
+# SVG treated as an asset (binary) by default. If you want to treat it as text,
+# comment-out the following line and uncomment the line after.
+*.svg       binary
+#*.svg      text
+*.eps       binary
+
+# Unity files
+*.asset             merge=binary
+*.mat               merge=binary
+*.meta              merge=binary
+*.physicMaterial    merge=binary
+*.prefab            merge=binary
+*.unity             merge=binary
+*.shader            merge=binary

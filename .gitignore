@@ -1,0 +1,33 @@
+
+# From "MASTERING UNITY PROJECT FOLDER STRUCTURE - VERSION CONTROL SYSTEMS"
+# http://unity3d.com/learn/tutorials/modules/beginner/architecture/folders-in-version-control
+
+# Also see "Using External Version Control Systems with Unity"
+# http://docs.unity3d.com/Manual/ExternalVersionControlSystemSupport.html
+# and https://github.com/github/gitignore/blob/master/Unity.gitignore
+
+# Unity generated
+Builds/
+Library/
+Logs/
+obj/
+Temp/
+UserSettings/
+*.csproj
+*.sln
+
+# Visual Studio / MonoDevelop generated
+.vs/
+*.suo
+*.user
+
+# LibreOffice
+*.odt#
+*.ods#
+
+# Other
+Thumbs.db*
+/SaveData/
+*.blend1
+/SerializedBuildInfo/
+
