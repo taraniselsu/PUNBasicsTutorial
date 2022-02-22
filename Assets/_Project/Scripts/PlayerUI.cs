@@ -27,7 +27,9 @@ public class PlayerUI : MonoBehaviour
         this.target = target;
         targetRenderer = target.GetComponentInChildren<Renderer>();
 
-        playerNameText.text = target.photonView.Owner.NickName;
+        Photon.Realtime.Player owner = target.photonView.Owner;
+        if (owner != null)
+            playerNameText.text = owner.NickName;
     }
 
     private void Update()
